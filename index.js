@@ -17,6 +17,7 @@ async function run() {
         await client.connect();
         const database = client.db('luxury_hotel');
         const roomsCollection = database.collection('rooms');
+        const roombookings = database.collection('roombookings')
 
         // GET API FOR ROOMS
         app.get('/rooms', async (req, res) => {
@@ -37,6 +38,37 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await roomsCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // GET API FOR ROOMBOOK
+        app.get('/roombookings', async (req, res) => {
+            const cursor = roombookings.find({});
+            const roombooks = await cursor.toArray();
+            res.send(roombooks);
+        });
+
+        // GET API FOR ROOMBOOK TO GET DATA BY USER EMAIL
+        app.get('/roombookings/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email)
+            const query = { clientEmail: email };
+            const roombooks = await roombookings.find(query).toArray();
+            res.send(roombooks);
+        });
+
+        // POST API FOR ROOMBOOK
+        app.post('/roombookings', async (req, res) => {
+            const roombook = req.body;
+            const result = await roombookings.insertOne(roombook);
+            res.send(result);
+        });
+
+        // DELETE API FOR ROOMBOOK
+        app.delete('/roombookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await roombookings.deleteOne(query);
             res.send(result);
         })
 
