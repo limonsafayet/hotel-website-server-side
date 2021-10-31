@@ -72,6 +72,17 @@ async function run() {
             res.send(result);
         })
 
+        // UPDATE API FOR ROOMBOOK
+        app.put('/roombookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const roombook = await roombookings.findOne(filter);
+            const newStatus = roombook.status == "true" ? "false" : "true";
+            const updateStatus = { $set: { status: newStatus } };
+            const result = await roombookings.updateOne(filter, updateStatus)
+            res.send(result);
+        })
+
     } finally {
 
     }
